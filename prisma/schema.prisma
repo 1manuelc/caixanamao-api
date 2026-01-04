@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tbcargo {
+  id            Int         @id @default(autoincrement())
+  nome          String      @unique @db.VarChar(50)
+  descricao     String?
+  nivel_acesso  Int         @default(1) @db.SmallInt
+  ativo         Boolean?    @default(true)
+  criado_em     DateTime?   @default(now()) @db.Timestamp(6)
+  atualizado_em DateTime?   @default(now()) @db.Timestamp(6)
+  tbusuario     tbusuario[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tbempresa {
+  id            Int         @id @default(autoincrement())
+  nome          String      @db.VarChar(50)
+  cnpj          String      @unique @db.VarChar(30)
+  endereco      String?     @db.VarChar(100)
+  telefone      String?     @db.VarChar(30)
+  cep           String?     @db.VarChar(30)
+  ativo         Boolean?    @default(true)
+  criado_em     DateTime?   @default(now()) @db.Timestamp(6)
+  atualizado_em DateTime?   @default(now()) @db.Timestamp(6)
+  tbusuario     tbusuario[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tbentradadevalores {
+  id             String    @id @db.VarChar(50)
+  iduser         String    @db.VarChar(50)
+  data           DateTime  @db.Date
+  data_final     DateTime? @db.Date
+  valor_inicial  Decimal   @default(0) @db.Decimal(10, 2)
+  valor_especie  Decimal   @default(0) @db.Decimal(10, 2)
+  valor_cartao   Decimal   @default(0) @db.Decimal(10, 2)
+  valor_pix      Decimal   @default(0) @db.Decimal(10, 2)
+  valor_despesas Decimal   @default(0) @db.Decimal(10, 2)
+  observacoes    String?
+  criado_em      DateTime? @default(now()) @db.Timestamp(6)
+  atualizado_em  DateTime? @default(now()) @db.Timestamp(6)
+  tbusuario      tbusuario @relation(fields: [iduser], references: [iduser], onUpdate: NoAction, map: "fk_entrada_usuario")
+
+  @@index([data], map: "idx_entrada_data")
+  @@index([data_final], map: "idx_entrada_data_final")
+  @@index([iduser], map: "idx_entrada_usuario")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tbrelatorio {
+  id            Int        @id @default(autoincrement())
+  nome          String     @db.VarChar(100)
+  data          DateTime   @db.Date
+  tipo          String     @db.VarChar(50)
+  descricao     String?
+  id_usuario    String?    @db.VarChar(50)
+  arquivo_path  String?    @db.VarChar(255)
+  criado_em     DateTime?  @default(now()) @db.Timestamp(6)
+  atualizado_em DateTime?  @default(now()) @db.Timestamp(6)
+  tbusuario     tbusuario? @relation(fields: [id_usuario], references: [iduser], onUpdate: NoAction, map: "fk_relatorio_usuario")
+
+  @@index([data], map: "idx_relatorio_data")
+  @@index([tipo], map: "idx_relatorio_tipo")
+  @@index([id_usuario], map: "idx_relatorio_usuario")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tbusuario {
+  iduser             String               @id @db.VarChar(50)
+  nome               String               @db.VarChar(50)
+  cpf                String               @unique @db.VarChar(20)
+  nasc               DateTime?            @db.Date
+  email              String               @unique @db.VarChar(100)
+  senha              String               @db.VarChar(255)
+  id_cargo           Int                  @default(1)
+  id_empresa         Int?
+  ativo              Boolean?             @default(true)
+  criado_em          DateTime?            @default(now()) @db.Timestamp(6)
+  atualizado_em      DateTime?            @default(now()) @db.Timestamp(6)
+  tbentradadevalores tbentradadevalores[]
+  tbrelatorio        tbrelatorio[]
+  tbcargo            tbcargo              @relation(fields: [id_cargo], references: [id], onUpdate: NoAction, map: "fk_usuario_cargo")
+  tbempresa          tbempresa?           @relation(fields: [id_empresa], references: [id], onUpdate: NoAction, map: "fk_usuario_empresa")
+
+  @@index([id_cargo], map: "idx_usuario_cargo")
+  @@index([cpf], map: "idx_usuario_cpf")
+  @@index([email], map: "idx_usuario_email")
+  @@index([id_empresa], map: "idx_usuario_empresa")
+}
