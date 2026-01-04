@@ -11,8 +11,8 @@ import jwt from 'jsonwebtoken';
 @Injectable()
 export class AuthService {
   constructor(private prismaService: PrismaService) {}
-  async login(body: LoginDto) {
-    const { email, senha } = body;
+  async login(loginDto: LoginDto) {
+    const { email, senha } = loginDto;
 
     if (!email) {
       throw new BadRequestException('O email é obrigatório!');
