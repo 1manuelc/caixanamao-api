@@ -9,6 +9,7 @@ import { CheckAuthMiddleware } from './common/middlewares/check-auth.middleware'
 import { UsersModule } from './users/users.module';
 import { RegistersModule } from './registers/registers.module';
 import { ReportsModule } from './reports/reports.module';
+import { CompaniesModule } from './companies/companies.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ReportsModule } from './reports/reports.module';
     UsersModule,
     RegistersModule,
     ReportsModule,
+    CompaniesModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
