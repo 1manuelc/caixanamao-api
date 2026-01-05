@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { CheckAuthMiddleware } from './common/middlewares/check-auth.middleware';
 import { UsersModule } from './users/users.module';
+import { RegistersModule } from './registers/registers.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UsersModule } from './users/users.module';
     PrismaModule,
     AuthModule,
     UsersModule,
+    RegistersModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
