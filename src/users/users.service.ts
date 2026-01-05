@@ -8,6 +8,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class UsersService {
@@ -44,8 +45,12 @@ export class UsersService {
     }
   }
 
-  async findAll() {
-    return await this.prismaService.tbusuario.findMany();
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset } = paginationDto;
+    return await this.prismaService.tbusuario.findMany({
+      take: limit,
+      skip: offset,
+    });
   }
 
   async findOne(id: string) {

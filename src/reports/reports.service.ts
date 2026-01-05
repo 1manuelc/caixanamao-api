@@ -67,9 +67,11 @@ export class ReportsService {
   }
 
   async findAll(queryReportDto: QueryReportDto) {
-    const { includeValues } = queryReportDto;
-    console.log(Boolean(includeValues));
-    const reports = await this.prismaService.tbrelatorio.findMany();
+    const { includeValues, limit = 10, offset } = queryReportDto;
+    const reports = await this.prismaService.tbrelatorio.findMany({
+      take: limit,
+      skip: offset,
+    });
 
     if (includeValues) {
       return Promise.all(

@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { RegistersService } from './registers.service';
 import { CreateRegisterDto } from './dto/create-register.dto';
 import { UpdateRegisterDto } from './dto/update-register.dto';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Controller('registers')
 export class RegistersController {
@@ -21,8 +23,8 @@ export class RegistersController {
   }
 
   @Get()
-  findAll() {
-    return this.registersService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.registersService.findAll(paginationDto);
   }
 
   @Get(':id')
