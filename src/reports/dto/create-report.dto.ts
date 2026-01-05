@@ -1,5 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsOptional, IsString, IsUUID, MaxDate } from 'class-validator';
+import {
+  IsDate,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MaxDate,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateReportDto {
   @IsDate()
@@ -17,6 +24,7 @@ export class CreateReportDto {
 
   @IsString()
   @IsOptional()
+  @MaxLength(100)
   nome: string;
 
   @IsString()

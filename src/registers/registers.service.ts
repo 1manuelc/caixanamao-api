@@ -92,10 +92,7 @@ export class RegistersService {
       throw new NotFoundException('Registro não encontrado');
     }
 
-    await this.prismaService.tbentradadevalores.delete({
-      where: { id },
-    });
-
+    await this.prismaService.tbentradadevalores.delete({ where: { id } });
     return registerExists;
   }
 }
