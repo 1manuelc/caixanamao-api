@@ -9,6 +9,8 @@ import {
   IsEmail,
   MinLength,
   IsOptional,
+  IsInt,
+  IsBoolean,
 } from 'class-validator';
 
 export class UpdateUserDto {
@@ -37,7 +39,10 @@ export class UpdateUserDto {
   @MinLength(8)
   senha: string;
 
-  @IsString()
-  @MinLength(8)
-  senha_confirmacao: string;
+  @IsInt()
+  @IsOptional()
+  id_empresa: number | null;
+
+  @IsBoolean()
+  ativo: boolean;
 }
