@@ -11,12 +11,19 @@ export class CheckAuthMiddleware implements NestMiddleware {
       throw new UnauthorizedException('Acesso negado!');
     }
 
+    if (
+      process.env.NODE_ENV === 'development' &&
+      token === process.env.MASTER_ACCESS_TOKEN
+    ) {
+      return next();
+    }
+
     try {
       jwt.verify(token, process.env.SECRET_KEY!);
       next();
     } catch (e) {
       if (e instanceof Error) {
-        throw new UnauthorizedException('O Token é inválido!');
+        throw new UnauthorizedException('O Token é inválido!', e.message);
       }
     }
   }
