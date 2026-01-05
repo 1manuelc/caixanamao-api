@@ -2,7 +2,9 @@ import { Type } from 'class-transformer';
 import {
   IsDate,
   IsEmail,
+  IsInt,
   IsNumber,
+  IsOptional,
   IsString,
   Matches,
   Max,
@@ -40,4 +42,8 @@ export class RegisterDto {
   @IsString()
   @MinLength(8)
   senha_confirmacao: string;
+
+  @IsInt()
+  @IsOptional()
+  id_empresa: number;
 }

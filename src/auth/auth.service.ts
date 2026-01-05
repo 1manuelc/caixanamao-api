@@ -23,32 +23,46 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const { email, senha } = loginDto;
 
-    const user = await this.prismaService.tbusuario.findUnique({
-      where: { email },
-    });
+    try {
+      const user = await this.prismaService.tbusuario.findUnique({
+        where: { email },
+      });
 
-    if (!user) {
-      throw new NotFoundException('Usuário inexistente');
+      if (!user) {
+        throw new NotFoundException('Usuário inexistente');
+      }
+
+      const isPasswordValid = await this.passwordService.verifyPassword(
+        user.senha,
+        senha,
+      );
+      if (!isPasswordValid) {
+        throw new UnauthorizedException('Credenciais inválidas');
+      }
+
+      const token = jwt.sign({ id: user.iduser }, process.env.SECRET_KEY!, {
+        expiresIn: 2400, //40min
+      });
+
+      return token;
+    } catch (e) {
+      if (e instanceof Error) {
+        throw new InternalServerErrorException(e.message);
+      }
     }
-
-    const isPasswordValid = await this.passwordService.verifyPassword(
-      senha,
-      user.senha,
-    );
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Credenciais inválidas');
-    }
-
-    const token = jwt.sign({ id: user.iduser }, process.env.SECRET_KEY!, {
-      expiresIn: 2400, //40min
-    });
-
-    return token;
   }
 
   async register(registerDto: RegisterDto) {
-    const { nome, cpf, nasc, cargo, email, senha, senha_confirmacao } =
-      registerDto;
+    const {
+      nome,
+      cpf,
+      nasc,
+      cargo,
+      email,
+      senha,
+      senha_confirmacao,
+      id_empresa,
+    } = registerDto;
 
     if (senha !== senha_confirmacao) {
       throw new BadGatewayException(
@@ -65,6 +79,7 @@ export class AuthService {
           nasc,
           id_cargo: cargo,
           email,
+          id_empresa,
           senha: await this.passwordService.hashPassword(senha),
         },
       });
