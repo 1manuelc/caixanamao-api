@@ -57,18 +57,17 @@ model tbentradadevalores {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model tbrelatorio {
   id            Int        @id @default(autoincrement())
-  nome          String     @db.VarChar(100)
+  nome          String?    @db.VarChar(100)
   data          DateTime   @db.Date
-  tipo          String     @db.VarChar(50)
   descricao     String?
   id_usuario    String?    @db.VarChar(50)
   arquivo_path  String?    @db.VarChar(255)
   criado_em     DateTime?  @default(now()) @db.Timestamp(6)
   atualizado_em DateTime?  @default(now()) @db.Timestamp(6)
+  data_final    DateTime   @db.Date
   tbusuario     tbusuario? @relation(fields: [id_usuario], references: [iduser], onUpdate: NoAction, map: "fk_relatorio_usuario")
 
   @@index([data], map: "idx_relatorio_data")
-  @@index([tipo], map: "idx_relatorio_tipo")
   @@index([id_usuario], map: "idx_relatorio_usuario")
 }
 
