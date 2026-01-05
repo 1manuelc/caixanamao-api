@@ -1,49 +1,15 @@
 import {
-  BadGatewayException,
+  BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { v4 as uuidv4 } from 'uuid';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
-
-  async create(createUserDto: CreateUserDto) {
-    const { nome, cpf, nasc, cargo, email, senha, senha_confirmacao } =
-      createUserDto;
-
-    if (senha !== senha_confirmacao) {
-      throw new BadGatewayException(
-        'A senha e a confirmação precisam ser iguais!',
-      );
-    }
-
-    try {
-      const user = await this.prismaService.tbusuario.create({
-        data: {
-          iduser: uuidv4(),
-          nome,
-          cpf,
-          nasc,
-          id_cargo: cargo,
-          email,
-          senha,
-        },
-      });
-
-      return user;
-    } catch (e) {
-      if (e instanceof Error) {
-        throw new InternalServerErrorException(e.message);
-      }
-    }
-  }
 
   async findAll(paginationDto: PaginationDto) {
     const { limit = 10, offset } = paginationDto;
@@ -72,6 +38,12 @@ export class UsersService {
 
     if (!userExists) {
       throw new NotFoundException('Usuário não encontrado');
+    }
+
+    if (updateUserDto.senha !== updateUserDto.senha_confirmacao) {
+      throw new BadRequestException(
+        'A senha e a confirmação precisam ser iguais!',
+      );
     }
 
     const { cargo, ...rest } = updateUserDto;
