@@ -1,0 +1,179 @@
+@base_url = http://localhost:3000
+@access_token = <accessToken-master-key-cnm>
+
+# Users
+# @name GetUsers
+GET {{base_url}}/users
+Authorization: Bearer {{access_token}}
+###
+
+# @name GetUserById
+GET {{base_url}}/users/usr_admin_001
+Authorization: Bearer {{access_token}}
+###
+
+# @name CreateUser/SignUp
+POST  {{base_url}}/users/
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+
+{
+    "nome": "Usuario teste",
+    "cpf": "000.000.000-78",
+    "nasc": "2015-09-30",
+    "cargo": 1,
+    "email": "teste@gmail.com",
+    "senha": "12345678",
+    "senha_confirmacao": "12345678"
+}
+###
+
+# @name PatchUser
+PATCH {{base_url}}/users/0f87ae8d-9434-445b-8f04-46a7ec65ce37
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "nome": "teste4R5",
+    "cpf": "000.450.000-00",
+    "nasc": "2015-09-30",
+    "cargo": true,
+    "email": "teste0@gmail.com",
+    "senha": "teste",
+    "senha_confirmacao": "teste"
+}
+###
+
+# @name DeleteUser
+DELETE {{base_url}}/users/0f87ae8d-9434-445b-8f04-46a7ec65ce37
+Authorization: Bearer {{access_token}}
+###  
+
+# Login
+# @name Login/SignIn
+POST {{base_url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@exemplo.com",
+    "senha": "$2b$10$example_hash_here"
+}
+###
+
+# Register
+# @name GetRegisters
+GET  {{base_url}}/registers
+Authorization: Bearer {{access_token}}
+###
+
+# @name GetRegisterById
+GET {{base_url}}/registers/d062c3f2-381b-4dd0-8808-9814b8ce1298
+Authorization: Bearer {{access_token}}
+###
+
+# @name CreateRegister
+POST {{base_url}}/registers
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "iduser": "0f87ae8d-9434-445b-8f04-46a7ec65ce37",
+    "valor_inicial": 490.50,
+    "valor_especie": 20,
+    "valor_cartao": 1450,
+    "valor_pix": 10,
+    "valor_despesas": 75,
+    "data": "2015-10-06",
+    "data_final": "2015-10-08"
+}
+###
+
+# @name DeleteRegister
+DELETE {{base_url}}/registers/d062c3f2-381b-4dd0-8808-9814b8ce1298
+Authorization: Bearer {{access_token}}
+###
+
+# Reports
+# @name CreateReport
+POST {{base_url}}/reports
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "iduser": "0f87ae8d-9434-445b-8f04-46a7ec65ce37",
+    "data": "2015-10-02",
+    "data_final": "2015-10-08"
+}
+###
+
+# @name GetReports
+GET {{base_url}}/reports?includeValues=true
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+###
+
+# @name GetReportById
+GET {{base_url}}/reports/2
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+###
+
+# @name UpdateReport
+PATCH {{base_url}}/reports/2
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "nome": "Relatório teste"
+}
+###
+
+# @name DeleteReport
+DELETE {{base_url}}/reports/1
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+###
+
+# Companies
+
+# @name GetCompanies
+GET {{base_url}}/companies
+#?limit=10
+#&offset=0
+Authorization: Bearer {{access_token}}
+###
+
+# @name GetCompany
+GET {{base_url}}/companies/1
+Authorization: Bearer {{access_token}}
+###
+
+# @name CreateCompany
+POST {{base_url}}/companies/
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "nome": "Empresa Exemplo",
+    "cnpj": "83.257.901/0001-90",
+    "endereco": "Rua fulano de tal",
+    "telefone": "(00) 0 0000-0000",
+    "cep": "00000-000"
+}
+###
+
+# @name UpdateCompany
+PATCH {{base_url}}/companies/2
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "ativo": false
+}
+###
+
+# @name DeleteCompany
+DELETE {{base_url}}/companies/2
+Authorization: Bearer {{access_token}}
+###
