@@ -1,6 +1,35 @@
 @base_url = http://localhost:3000
 @access_token = <accessToken-master-key-cnm>
 
+# Auth
+# @name Login
+POST {{base_url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@exemplo.com",
+    "senha": "12345678"
+}
+###
+
+# @name Register/CreateUser
+POST  {{base_url}}/auth/register
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+
+{
+    "nome": "Administrador Sistema",
+    "cpf": "123.456.789-00",
+    "nasc": "1990-01-01",
+    "email": "admin@exemplo.com",
+    "senha": "12345678",
+    "senha_confirmacao": "12345678",
+    "cargo": 1
+}
+###
+
+
 # Users
 # @name GetUsers
 GET {{base_url}}/users
@@ -8,40 +37,19 @@ Authorization: Bearer {{access_token}}
 ###
 
 # @name GetUserById
-GET {{base_url}}/users/usr_admin_001
+GET {{base_url}}/users/81162f25-1364-4386-8522-a19d3be8bb3b
 Authorization: Bearer {{access_token}}
-###
-
-# @name CreateUser/SignUp
-POST  {{base_url}}/users/
-Content-Type: application/json
-Authorization: Bearer {{access_token}}
-
-
-{
-    "nome": "Usuario teste",
-    "cpf": "000.000.000-78",
-    "nasc": "2015-09-30",
-    "cargo": 1,
-    "email": "teste@gmail.com",
-    "senha": "12345678",
-    "senha_confirmacao": "12345678"
-}
 ###
 
 # @name PatchUser
-PATCH {{base_url}}/users/0f87ae8d-9434-445b-8f04-46a7ec65ce37
+PATCH {{base_url}}/users/81162f25-1364-4386-8522-a19d3be8bb3b
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
 {
-    "nome": "teste4R5",
-    "cpf": "000.450.000-00",
-    "nasc": "2015-09-30",
-    "cargo": true,
-    "email": "teste0@gmail.com",
-    "senha": "teste",
-    "senha_confirmacao": "teste"
+    "nome": "Administrador do Sistema",
+    "ativo": true
+    "senha": "12345678",
 }
 ###
 
@@ -50,18 +58,7 @@ DELETE {{base_url}}/users/0f87ae8d-9434-445b-8f04-46a7ec65ce37
 Authorization: Bearer {{access_token}}
 ###  
 
-# Login
-# @name Login/SignIn
-POST {{base_url}}/auth/login
-Content-Type: application/json
-
-{
-    "email": "admin@exemplo.com",
-    "senha": "$2b$10$example_hash_here"
-}
-###
-
-# Register
+# Registers
 # @name GetRegisters
 GET  {{base_url}}/registers
 Authorization: Bearer {{access_token}}
@@ -136,7 +133,6 @@ Content-Type: application/json
 ###
 
 # Companies
-
 # @name GetCompanies
 GET {{base_url}}/companies
 #?limit=10
