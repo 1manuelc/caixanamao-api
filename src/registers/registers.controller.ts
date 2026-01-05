@@ -9,8 +9,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { RegistersService } from './registers.service';
-import { CreateRegisterDto } from './dto/create-register.dto';
-import { UpdateRegisterDto } from './dto/update-register.dto';
+import { CreateRegisterDto } from './dtos/create-register.dto';
+import { UpdateRegisterDto } from './dtos/update-register.dto';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 @Controller('registers')

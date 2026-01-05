@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
+import { CreateReportDto } from './dtos/create-report.dto';
+import { UpdateReportDto } from './dtos/update-report.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
-import { QueryReportDto } from './dto/query-report.dto';
+import { QueryReportDto } from './dtos/query-report.dto';
 
 @Injectable()
 export class ReportsService {

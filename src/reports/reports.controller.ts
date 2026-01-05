@@ -10,9 +10,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { ReportsService } from './reports.service';
-import { CreateReportDto } from './dto/create-report.dto';
-import { UpdateReportDto } from './dto/update-report.dto';
-import { QueryReportDto } from './dto/query-report.dto';
+import { CreateReportDto } from './dtos/create-report.dto';
+import { UpdateReportDto } from './dtos/update-report.dto';
+import { QueryReportDto } from './dtos/query-report.dto';
 
 @Controller('reports')
 export class ReportsController {

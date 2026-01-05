@@ -3,8 +3,8 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateRegisterDto } from './dto/create-register.dto';
-import { UpdateRegisterDto } from './dto/update-register.dto';
+import { CreateRegisterDto } from './dtos/create-register.dto';
+import { UpdateRegisterDto } from './dtos/update-register.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
