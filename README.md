@@ -1,98 +1,162 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# API CaixanaMão
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<div>
+  <img src='https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white' alt='NestJS'>
+  <img src='https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white' alt='TypeScript\'>
+  <img src='https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white' alt='PostgreSQL'>
+  <img src='https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white' alt='Prisma'>
+  <img src='https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens' alt='JWT'>
+</div>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Este projeto contém uma API robusta desenvolvida com NestJS para gerenciar operações financeiras e administrativas de empresas e usuários, incluindo autenticação, gestão de usuários, empresas, registros de valores e relatórios. A API oferece rotas bem definidas e seguras para diversas funcionalidades.
 
-## Description
+## 📋 Funcionalidades
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+-   **Autenticação e Autorização**: Registro de novos usuários, login/logout e autenticação baseada em JWT com cookies seguros.
+-   **Gestão de Usuários**: Criação, leitura, atualização e exclusão de usuários com diferentes níveis de acesso (Operador, Admin).
+-   **Gestão de Empresas**: Criação, leitura, atualização e exclusão de informações de empresas.
+-   **Registros de Valores**: Gerenciamento de entradas de valores (espécie, cartão, pix, despesas) por usuário e data.
+-   **Relatórios**: Geração e gestão de relatórios financeiros baseados em dados de entrada de valores.
+-   **Validação de Dados**: Validação robusta de requisições e esquemas de resposta usando `class-validator` e `class-transformer`.
+-   **Controle de Acesso**: Implementação de guardas de rota baseados em papéis (`RolesEnum.OPERADOR`, `RolesEnum.ADMIN`).
 
-## Project setup
+## 🛠️ Implementação
+
+A API foi desenvolvida com `NestJS` e `TypeScript`, utilizando as seguintes dependências principais:
+
+-   **`@nestjs/core`**: Framework principal para construção da API.
+-   **`@nestjs/config`**: Módulo para gerenciamento de variáveis de ambiente.
+-   **`@prisma/client`**: Cliente Prisma para interagir com o banco de dados PostgreSQL.
+-   **`argon2`**: Biblioteca para hash seguro de senhas.
+-   **`class-validator` e `class-transformer`**: Para validação e transformação de objetos de dados (DTOs).
+-   **`jsonwebtoken`**: Para geração e verificação de JSON Web Tokens (JWT).
+-   **`rxjs`**: Biblioteca para programação reativa.
+-   **`uuid`**: Para geração de IDs únicos.
+
+## 🗄️ Estrutura do Banco de Dados
+
+O projeto utiliza PostgreSQL com Prisma como ORM. As principais entidades são:
+
+-   **`tbcargo`**: Define os cargos dos usuários e seus níveis de acesso.
+-   **`tbempresa`**: Armazena informações das empresas (nome, CNPJ, endereço, etc.).
+-   **`tbentradadevalores`**: Registra as entradas de valores diárias por usuário (espécie, cartão, pix, despesas).
+-   **`tbrelatorio`**: Gerencia os relatórios gerados, com referência ao usuário e caminho do arquivo.
+-   **`tbusuario`**: Contém os dados dos usuários (nome, CPF, email, senha, cargo, empresa).
+
+## 📡 Rotas e Módulos
+
+### Teste
+
+- `GET /` - Retorna `Hello CaixaNaMão!`.
+
+### Autenticação (`/auth`)
+
+-   `POST /auth/login` - Autenticação de usuário e obtenção de token JWT.
+-   `POST /auth/register` - Registro de um novo usuário.
+
+### Usuários (`/users`)
+
+-   `GET /users` - Lista todos os usuários (requer autenticação e papéis específicos).
+-   `GET /users/:id` - Obtém um usuário específico por ID (requer autenticação e papéis específicos).
+-   `PATCH /users/:id` - Atualiza um usuário específico por ID (requer autenticação e papéis específicos).
+-   `DELETE /users/:id` - Remove um usuário específico por ID (requer autenticação e papéis específicos).
+
+### Empresas (`/companies`)
+
+-   `POST /companies` - Cria uma nova empresa (requer autenticação e papéis específicos).
+-   `GET /companies` - Lista todas as empresas (requer autenticação e papéis específicos).
+-   `GET /companies/:id` - Obtém uma empresa específica por ID (requer autenticação e papéis específicos).
+-   `PATCH /companies/:id` - Atualiza uma empresa específica por ID (requer autenticação e papéis específicos).
+-   `DELETE /companies/:id` - Remove uma empresa específica por ID (requer autenticação e papéis específicos).
+
+### Registros de Valores (`/registers`)
+
+-   `POST /registers` - Cria um novo registro de entrada de valores (requer autenticação e papéis específicos).
+-   `GET /registers` - Lista todos os registros de entrada de valores (requer autenticação e papéis específicos).
+-   `GET /registers/:id` - Obtém um registro específico por ID (requer autenticação e papéis específicos).
+-   `PATCH /registers/:id` - Atualiza um registro específico por ID (requer autenticação e papéis específicos).
+-   `DELETE /registers/:id` - Remove um registro específico por ID (requer autenticação e papéis específicos).
+
+### Relatórios (`/reports`)
+
+-   `POST /reports` - Cria um novo relatório (requer autenticação e papéis específicos).
+-   `GET /reports` - Lista todos os relatórios (requer autenticação e papéis específicos).
+-   `GET /reports/:id` - Obtém um relatório específico por ID (requer autenticação e papéis específicos).
+-   `PATCH /reports/:id` - Atualiza um relatório específico por ID (requer autenticação e papéis específicos).
+-   `DELETE /reports/:id` - Remove um relatório específico por ID (requer autenticação e papéis específicos).
+
+## 🚀 Executando Localmente
+
+Para executar a API localmente, siga os passos abaixo:
+
+### 1. Clonar o repositório
 
 ```bash
-$ pnpm install
+git clone https://github.com/1manuelc/caixanamao-api.git
+cd caixanamao-api
 ```
 
-## Compile and run the project
+### 2. Instalar as dependências
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+npm install
+# ou
+pnpm install
+# ou
+yarn install
 ```
 
-## Run tests
+### 3. Configurar variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```env
+DATABASE_URL="postgresql://<user>:<password>@<host>:<port>/<database_name>"
+SECRET_KEY="<jwt-secret>"
+MASTER_ACCESS_TOKEN = "<your-master-access-token>"
+NODE_ENV=<development | production | test>
+PORT=3000
+```
+
+### 4. Configurar o banco de dados
+
+Execute as migrações do Prisma para criar as tabelas:
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+npx prisma migrate dev --name init
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 5. Executar em modo desenvolvimento
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+A API estará disponível em `http://localhost:3000` (ou na porta configurada em `PORT`).
 
-## Resources
 
-Check out a few resources that may come in handy when working with NestJS:
+## 📦 Scripts Disponíveis
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+-   `npm run build` - Compila o projeto TypeScript para JavaScript.
+-   `npm run format` - Formata o código com Prettier.
+-   `npm run start` - Inicia a API em modo de produção (requer compilação prévia).
+-   `npm run start:dev` - Inicia a API em modo de desenvolvimento com hot-reload.
+-   `npm run start:debug` - Inicia a API em modo debug com hot-reload.
+-   `npm run start:prod` - Inicia a API em modo de produção (usando o build).
+-   `npm run lint` - Executa o linter e corrige problemas.
 
-## Support
+## 🔐 Autenticação
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+A API utiliza JWT (JSON Web Tokens) para autenticação em cabeçalhos de autorização. O fluxo de autenticação envolve o registro e login para obtenção de um token que deve ser enviado em requisições subsequentes para rotas protegidas.
 
-## Stay in touch
+## 📝 Validação de Dados
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Todas as requisições são validadas usando `class-validator` e `class-transformer` do NestJS, garantindo a integridade dos dados. Erros de validação retornam mensagens claras e estruturadas.
 
-## License
+## 🌐 CORS
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+O NestJS oferece suporte a CORS por padrão ou através de módulos específicos, permitindo requisições de diferentes origens. A configuração exata pode ser encontrada no `main.ts` ou em um módulo de configuração.
+
+## 👤 Autor
+
+[@1manuelc](https://github.com/1manuelc)
