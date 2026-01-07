@@ -9,15 +9,16 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
 
-import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { PasswordService } from 'src/common/password/password.service';
+import { JwtService } from 'src/common/jwt/jwt.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prismaService: PrismaService,
     private readonly passwordService: PasswordService,
+    private jwtService: JwtService,
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -40,11 +41,10 @@ export class AuthService {
         throw new UnauthorizedException('Credenciais inválidas');
       }
 
-      const token = jwt.sign({ id: user.iduser }, process.env.SECRET_KEY!, {
-        expiresIn: 2400, //40min
-      });
-
-      return token;
+      return this.jwtService.sign(
+        { id: user.iduser, role: user.id_cargo },
+        { expiresIn: 2400 }, //40min
+      );
     } catch (e) {
       if (e instanceof Error) {
         throw new InternalServerErrorException(e.message);
