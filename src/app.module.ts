@@ -10,6 +10,10 @@ import { UsersModule } from './users/users.module';
 import { RegistersModule } from './registers/registers.module';
 import { ReportsModule } from './reports/reports.module';
 import { CompaniesModule } from './companies/companies.module';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './common/guards/roles.guard';
+import { JwtService } from './common/jwt/jwt.service';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 @Module({
   imports: [
@@ -25,10 +29,19 @@ import { CompaniesModule } from './companies/companies.module';
     CompaniesModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [
+    AppService,
+    PrismaService,
+    JwtService,
+    { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_FILTER, useClass: AllExceptionsFilter },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CheckAuthMiddleware).exclude('/auth/*').forRoutes('/');
+    consumer
+      .apply(CheckAuthMiddleware)
+      .exclude('/auth/*path')
+      .forRoutes('/*path');
   }
 }
