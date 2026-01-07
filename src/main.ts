@@ -4,7 +4,16 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    cors: { origin: ['http://192.168.0.118:5173', 'http://localhost:5173'] },
+    cors: {
+      origin: [
+        'http://192.168.0.118:5173',
+        'http://localhost:5173',
+        'https://caixanamao-git-multiset-register-jaqueline-uchoas-projects.vercel.app',
+        'https://caixanamao.vercel.app/',
+        'https://caixanamao-nyg080hb1-jaqueline-uchoas-projects.vercel.app',
+        'https://caixanamao-guencfjhz-jaqueline-uchoas-projects.vercel.app',
+      ],
+    },
   });
   app.useGlobalPipes(
     new ValidationPipe({
