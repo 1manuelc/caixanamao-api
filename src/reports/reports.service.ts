@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateReportDto } from './dtos/create-report.dto';
 import { UpdateReportDto } from './dtos/update-report.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
@@ -42,6 +46,14 @@ export class ReportsService {
     const { data, data_final, iduser, nome, descricao, arquivo_path } =
       createReportDto;
 
+    const user = await this.prismaService.tbusuario.findFirst({
+      where: { iduser },
+    });
+
+    if (!user) {
+      throw new BadRequestException('Usuário inexistente');
+    }
+
     const reportValues = await this.getReportValues(data, data_final);
     const reportInfo = await this.prismaService.tbrelatorio.create({
       data: {
@@ -78,7 +90,7 @@ export class ReportsService {
         reports.map(async (report) => {
           const values = await this.getReportValues(
             new Date(report.data),
-            new Date(report.data_final as Date),
+            new Date(report.data_final),
           );
 
           return {
@@ -103,7 +115,7 @@ export class ReportsService {
 
     const reportValues = await this.getReportValues(
       new Date(report.data),
-      new Date(report.data_final as Date),
+      new Date(report.data_final),
     );
 
     return { ...report, values: { ...reportValues } };

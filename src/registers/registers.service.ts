@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -26,6 +27,14 @@ export class RegistersService {
     } = createRegisterDto;
 
     try {
+      const user = await this.prismaService.tbusuario.findFirst({
+        where: { iduser },
+      });
+
+      if (!user) {
+        throw new BadRequestException('Usuário inexistente');
+      }
+
       const register = await this.prismaService.tbentradadevalores.create({
         data: {
           id: uuidv4(),
