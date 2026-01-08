@@ -9,8 +9,8 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
-    const token = await this.authService.login(loginDto);
-    return { accessToken: token };
+    const { accessToken, userId } = await this.authService.login(loginDto);
+    return { accessToken, userId };
   }
 
   @Post('register')

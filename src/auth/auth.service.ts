@@ -21,7 +21,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(loginDto: LoginDto) {
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ accessToken: string; userId: string }> {
     const { email, senha } = loginDto;
 
     try {
@@ -41,14 +43,18 @@ export class AuthService {
         throw new UnauthorizedException('Credenciais inválidas');
       }
 
-      return this.jwtService.sign(
-        { id: user.iduser, role: user.id_cargo },
-        { expiresIn: 2400 }, //40min
-      );
+      return {
+        accessToken: this.jwtService.sign(
+          { id: user.iduser, role: user.id_cargo },
+          { expiresIn: 2400 }, //40min
+        ),
+        userId: user.iduser,
+      };
     } catch (e) {
       if (e instanceof Error) {
         throw new InternalServerErrorException(e.message);
       }
+      throw new InternalServerErrorException('Erro desconhecido');
     }
   }
 
