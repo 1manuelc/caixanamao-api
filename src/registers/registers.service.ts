@@ -3,12 +3,14 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateRegisterDto } from './dtos/create-register.dto';
 import { UpdateRegisterDto } from './dtos/update-register.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { DecimalStringToNumberInterceptor } from 'src/common/interceptors/decimal-string-to-number.interceptor';
 
 @Injectable()
 export class RegistersService {
@@ -57,6 +59,7 @@ export class RegistersService {
     }
   }
 
+  @UseInterceptors(DecimalStringToNumberInterceptor)
   async findAll(paginationDto: PaginationDto) {
     const { limit = 10, offset } = paginationDto;
     return await this.prismaService.tbentradadevalores.findMany({
@@ -65,6 +68,7 @@ export class RegistersService {
     });
   }
 
+  @UseInterceptors(DecimalStringToNumberInterceptor)
   async findOne(id: string) {
     const register = await this.prismaService.tbentradadevalores.findFirst({
       where: { id },
@@ -77,6 +81,7 @@ export class RegistersService {
     return register;
   }
 
+  @UseInterceptors(DecimalStringToNumberInterceptor)
   async update(id: string, updateRegisterDto: UpdateRegisterDto) {
     const registerExists =
       await this.prismaService.tbentradadevalores.findUnique({
