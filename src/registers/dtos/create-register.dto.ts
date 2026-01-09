@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsNumber, IsUUID, MaxDate } from 'class-validator';
+import { IsDate, IsNumber, IsUUID } from 'class-validator';
 
 export class CreateRegisterDto {
   @IsUUID()
@@ -26,12 +26,10 @@ export class CreateRegisterDto {
   valor_despesas!: number;
 
   @IsDate()
-  @MaxDate(new Date())
   @Type(() => Date)
   data!: Date;
 
   @IsDate()
-  @MaxDate(new Date())
   @Type(() => Date)
   data_final!: Date;
 }
