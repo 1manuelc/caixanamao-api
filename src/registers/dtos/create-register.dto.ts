@@ -3,30 +3,35 @@ import { IsDate, IsNumber, IsUUID, MaxDate } from 'class-validator';
 
 export class CreateRegisterDto {
   @IsUUID()
-  iduser: string;
+  iduser!: string;
 
   @IsNumber()
-  valor_inicial: number;
+  @Type(() => Number)
+  valor_inicial!: number;
 
   @IsNumber()
-  valor_especie: number;
+  @Type(() => Number)
+  valor_especie!: number;
 
   @IsNumber()
-  valor_cartao: number;
+  @Type(() => Number)
+  valor_cartao!: number;
 
   @IsNumber()
-  valor_pix: number;
+  @Type(() => Number)
+  valor_pix!: number;
 
   @IsNumber()
-  valor_despesas: number;
+  @Type(() => Number)
+  valor_despesas!: number;
 
   @IsDate()
   @MaxDate(new Date())
   @Type(() => Date)
-  data: Date;
+  data!: Date;
 
   @IsDate()
   @MaxDate(new Date())
   @Type(() => Date)
-  data_final: Date;
+  data_final!: Date;
 }

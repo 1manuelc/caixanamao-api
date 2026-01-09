@@ -3,14 +3,13 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CreateRegisterDto } from './dtos/create-register.dto';
 import { UpdateRegisterDto } from './dtos/update-register.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { DecimalStringToNumberInterceptor } from 'src/common/interceptors/decimal-string-to-number.interceptor';
+import { parseMoney } from './utils/parse-money-to-decimal.util';
 
 @Injectable()
 export class RegistersService {
@@ -51,7 +50,7 @@ export class RegistersService {
         },
       });
 
-      return register;
+      return parseMoney(register);
     } catch (e) {
       if (e instanceof Error) {
         throw new InternalServerErrorException(e.message);
@@ -59,16 +58,16 @@ export class RegistersService {
     }
   }
 
-  @UseInterceptors(DecimalStringToNumberInterceptor)
   async findAll(paginationDto: PaginationDto) {
     const { limit = 10, offset } = paginationDto;
-    return await this.prismaService.tbentradadevalores.findMany({
+    const registers = await this.prismaService.tbentradadevalores.findMany({
       take: limit,
       skip: offset,
     });
+
+    return parseMoney(registers);
   }
 
-  @UseInterceptors(DecimalStringToNumberInterceptor)
   async findOne(id: string) {
     const register = await this.prismaService.tbentradadevalores.findFirst({
       where: { id },
@@ -78,10 +77,8 @@ export class RegistersService {
       throw new NotFoundException('Registro não encontrado');
     }
 
-    return register;
+    return parseMoney(register);
   }
-
-  @UseInterceptors(DecimalStringToNumberInterceptor)
   async update(id: string, updateRegisterDto: UpdateRegisterDto) {
     const registerExists =
       await this.prismaService.tbentradadevalores.findUnique({
@@ -92,13 +89,15 @@ export class RegistersService {
       throw new NotFoundException('Registro não encontrado');
     }
 
-    return this.prismaService.tbentradadevalores.update({
+    const register = await this.prismaService.tbentradadevalores.update({
       where: { id },
       data: {
         ...updateRegisterDto,
         atualizado_em: new Date(),
       },
     });
+
+    return parseMoney(register);
   }
 
   async remove(id: string) {
@@ -112,6 +111,6 @@ export class RegistersService {
     }
 
     await this.prismaService.tbentradadevalores.delete({ where: { id } });
-    return registerExists;
+    return parseMoney(registerExists);
   }
 }

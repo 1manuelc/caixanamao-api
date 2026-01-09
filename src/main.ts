@@ -20,6 +20,7 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
+      transform: true,
     }),
   );
   app.setGlobalPrefix('/api');
