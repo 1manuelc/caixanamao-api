@@ -6,33 +6,33 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
-@Catch(Error)
+@Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: any, host: ArgumentsHost) {
     const context = host.switchToHttp();
-    const req: Request = context.getRequest();
     const res: Response = context.getResponse();
+    const req: Request = context.getRequest();
+
+    const status =
+      exception instanceof HttpException ? exception.getStatus() : 500;
+
+    const message =
+      exception instanceof HttpException
+        ? exception.getResponse()
+        : 'Internal Server Error';
 
     const infos = {
-      name: exception.name,
-      method: req.method,
+      statusCode: status,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      message: typeof message === 'object' ? (message as any).message : message,
       path: req.url,
-      statusCode: exception.getStatus(),
       timestamp: new Date().toISOString(),
-      message: exception.message.startsWith('\n') // protege contra vazamento de stack
-        ? 'Internal Server Error'
-        : exception.message,
-      cause: exception.message.startsWith('\n') // logging de erros com stack internamente
-        ? exception.message
-        : exception.cause,
     };
 
-    console.error(`\n[ERROR at ${infos.timestamp} in ${infos.path}]\n`, infos);
-    res.status(infos.statusCode).json({
-      statusCode: exception.getStatus(),
-      message: infos.message,
-      timestamp: infos.timestamp,
-      path: infos.path,
-    });
+    console.error(
+      `[ERROR at ${infos.timestamp} in /"${infos.path}/"]\n`,
+      exception,
+    );
+    res.status(status).json(infos);
   }
 }
