@@ -30,7 +30,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     };
 
     console.error(
-      `[ERROR at ${infos.timestamp} in /"${infos.path}/"]\n`,
+      `[ERROR at ${infos.timestamp} in "${infos.path}"]\n`,
       exception,
     );
     res.status(status).json(infos);
