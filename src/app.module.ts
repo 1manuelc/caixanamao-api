@@ -14,6 +14,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
 import { JwtService } from './common/jwt/jwt.service';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -21,6 +22,12 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 1min
+        limit: 16, // max de reqs por IP dentro do TTL
+      },
+    ]),
     PrismaModule,
     AuthModule,
     UsersModule,
@@ -35,6 +42,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
     JwtService,
     { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class AppModule implements NestModule {
