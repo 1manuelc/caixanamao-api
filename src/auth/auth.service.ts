@@ -12,6 +12,7 @@ import { RegisterDto } from './dtos/register.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { PasswordService } from 'src/common/password/password.service';
 import { JwtService } from 'src/common/jwt/jwt.service';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +24,7 @@ export class AuthService {
 
   async login(
     loginDto: LoginDto,
-  ): Promise<{ accessToken: string; userId: string }> {
+  ): Promise<{ accessToken: string; user: Omit<User, 'senha'> }> {
     const { email, senha } = loginDto;
 
     try {
@@ -44,11 +45,22 @@ export class AuthService {
       }
 
       return {
+        user: {
+          iduser: user.iduser,
+          nome: user.nome,
+          cpf: user.cpf,
+          email: user.email,
+          nasc: user.nasc,
+          ativo: user.ativo,
+          id_cargo: user.id_cargo,
+          id_empresa: user.id_empresa,
+          criado_em: user.criado_em,
+          atualizado_em: user.atualizado_em,
+        },
         accessToken: this.jwtService.sign(
           { id: user.iduser, role: user.id_cargo },
           { expiresIn: 2400 }, //40min
         ),
-        userId: user.iduser,
       };
     } catch (e) {
       if (e instanceof Error) {
@@ -58,7 +70,9 @@ export class AuthService {
     }
   }
 
-  async register(registerDto: RegisterDto) {
+  async register(
+    registerDto: RegisterDto,
+  ): Promise<{ accessToken: string; user: Omit<User, 'senha'> } | undefined> {
     const {
       nome,
       cpf,
@@ -77,7 +91,7 @@ export class AuthService {
     }
 
     try {
-      return await this.prismaService.tbusuario.create({
+      const user = await this.prismaService.tbusuario.create({
         data: {
           iduser: uuidv4(),
           nome,
@@ -88,7 +102,27 @@ export class AuthService {
           id_empresa,
           senha: await this.passwordService.hashPassword(senha),
         },
+        omit: { senha: true },
       });
+
+      return {
+        user: {
+          iduser: user.iduser,
+          nome: user.nome,
+          cpf: user.cpf,
+          email: user.email,
+          nasc: user.nasc,
+          ativo: user.ativo,
+          id_cargo: user.id_cargo,
+          id_empresa: user.id_empresa,
+          criado_em: user.criado_em,
+          atualizado_em: user.atualizado_em,
+        },
+        accessToken: this.jwtService.sign(
+          { id: user.iduser, role: user.id_cargo },
+          { expiresIn: 2400 }, //40min
+        ),
+      };
     } catch (e) {
       if (e instanceof Error) {
         throw new InternalServerErrorException(e.message);
