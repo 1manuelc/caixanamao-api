@@ -26,9 +26,9 @@ export class AuthController {
 
     response.cookie('refreshToken', authData.refreshToken, {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === 'production' ? true : false,
     });
 
     return {
@@ -46,9 +46,9 @@ export class AuthController {
 
     response.cookie('refreshToken', authData?.refreshToken, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === 'production' ? true : false,
     });
 
     return {
@@ -70,7 +70,8 @@ export class AuthController {
       await this.authService.refreshTokens(token);
     response.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: process.env.NODE_ENV === 'production' ? true : false,
     });
     return { user, accessToken };
   }
@@ -80,8 +81,8 @@ export class AuthController {
     response.cookie('refreshToken', '', {
       httpOnly: true,
       expires: new Date(0),
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: process.env.NODE_ENV === 'production' ? true : false,
     });
 
     return { message: 'Logout realizado com sucesso' };
