@@ -7,11 +7,14 @@ import { CreateCompanyDto } from './dtos/create-company.dto';
 import { UpdateCompanyDto } from './dtos/update-company.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { Company } from './entities/company.entity';
 
 @Injectable()
 export class CompaniesService {
   constructor(private prismaService: PrismaService) {}
-  async create(createCompanyDto: CreateCompanyDto) {
+  async create(
+    createCompanyDto: CreateCompanyDto,
+  ): Promise<Company | undefined> {
     const { cnpj, nome, telefone, cep, endereco } = createCompanyDto;
 
     try {
@@ -31,7 +34,7 @@ export class CompaniesService {
     }
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto): Promise<Company[]> {
     const { limit = 10, offset } = paginationDto;
     return await this.prismaService.tbempresa.findMany({
       take: limit,
@@ -39,7 +42,7 @@ export class CompaniesService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Company | undefined> {
     const company = await this.prismaService.tbempresa.findFirst({
       where: { id },
     });
@@ -51,7 +54,10 @@ export class CompaniesService {
     return company;
   }
 
-  async update(id: number, updateCompanyDto: UpdateCompanyDto) {
+  async update(
+    id: number,
+    updateCompanyDto: UpdateCompanyDto,
+  ): Promise<Company> {
     const companyExists = await this.prismaService.tbempresa.findUnique({
       where: { id },
     });
@@ -69,7 +75,7 @@ export class CompaniesService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<Company> {
     const companyExists = await this.prismaService.tbempresa.findUnique({
       where: { id },
     });

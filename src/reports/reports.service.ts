@@ -7,6 +7,7 @@ import { CreateReportDto } from './dtos/create-report.dto';
 import { UpdateReportDto } from './dtos/update-report.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { QueryReportDto } from './dtos/query-report.dto';
+import { Report } from './entities/report.entity';
 
 @Injectable()
 export class ReportsService {
@@ -21,6 +22,7 @@ export class ReportsService {
         data: true,
       },
       _sum: {
+        valor_inicial: true,
         valor_cartao: true,
         valor_especie: true,
         valor_pix: true,
@@ -35,6 +37,7 @@ export class ReportsService {
     });
 
     return {
+      valor_inicial: Number(values._sum.valor_inicial),
       valor_cartao: Number(values._sum.valor_cartao),
       valor_especie: Number(values._sum.valor_especie),
       valor_pix: Number(values._sum.valor_pix),
@@ -42,7 +45,7 @@ export class ReportsService {
     };
   }
 
-  async create(createReportDto: CreateReportDto) {
+  async create(createReportDto: CreateReportDto): Promise<Report> {
     const { data, data_final, iduser, nome, descricao, arquivo_path } =
       createReportDto;
 
@@ -104,7 +107,7 @@ export class ReportsService {
     return reports;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Report> {
     const report = await this.prismaService.tbrelatorio.findFirst({
       where: { id },
     });
@@ -121,7 +124,7 @@ export class ReportsService {
     return { ...report, values: { ...reportValues } };
   }
 
-  async update(id: number, updateReportDto: UpdateReportDto) {
+  async update(id: number, updateReportDto: UpdateReportDto): Promise<Report> {
     const { nome, descricao, data, data_final } = updateReportDto;
 
     const reportExists = await this.prismaService.tbrelatorio.findUnique({
@@ -144,7 +147,7 @@ export class ReportsService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<Report> {
     const reportExists = await this.prismaService.tbrelatorio.findUnique({
       where: { id },
     });

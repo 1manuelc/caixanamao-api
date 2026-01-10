@@ -10,12 +10,15 @@ import { PrismaService } from 'src/common/prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { parseMoney } from './utils/parse-money-to-decimal.util';
+import { Register } from './entities/register.entity';
 
 @Injectable()
 export class RegistersService {
   constructor(private prismaService: PrismaService) {}
 
-  async create(createRegisterDto: CreateRegisterDto) {
+  async create(
+    createRegisterDto: CreateRegisterDto,
+  ): Promise<Register | undefined> {
     const {
       iduser,
       data,
@@ -50,7 +53,7 @@ export class RegistersService {
         },
       });
 
-      return parseMoney(register);
+      return parseMoney(register) as Register;
     } catch (e) {
       if (e instanceof Error) {
         throw new InternalServerErrorException(e.message);
@@ -58,17 +61,17 @@ export class RegistersService {
     }
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto): Promise<Register[] | []> {
     const { limit = 10, offset } = paginationDto;
     const registers = await this.prismaService.tbentradadevalores.findMany({
       take: limit,
       skip: offset,
     });
 
-    return parseMoney(registers);
+    return parseMoney(registers) as Register[] | [];
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Register> {
     const register = await this.prismaService.tbentradadevalores.findFirst({
       where: { id },
     });
@@ -77,9 +80,12 @@ export class RegistersService {
       throw new NotFoundException('Registro não encontrado');
     }
 
-    return parseMoney(register);
+    return parseMoney(register) as Register;
   }
-  async update(id: string, updateRegisterDto: UpdateRegisterDto) {
+  async update(
+    id: string,
+    updateRegisterDto: UpdateRegisterDto,
+  ): Promise<Register> {
     const registerExists =
       await this.prismaService.tbentradadevalores.findUnique({
         where: { id },
@@ -97,10 +103,10 @@ export class RegistersService {
       },
     });
 
-    return parseMoney(register);
+    return parseMoney(register) as Register;
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<Register> {
     const registerExists =
       await this.prismaService.tbentradadevalores.findFirst({
         where: { id },
@@ -111,6 +117,6 @@ export class RegistersService {
     }
 
     await this.prismaService.tbentradadevalores.delete({ where: { id } });
-    return parseMoney(registerExists);
+    return parseMoney(registerExists) as Register;
   }
 }
