@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { PasswordService } from 'src/common/password/password.service';
 import { JwtService } from 'src/common/jwt/jwt.service';
 import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
     private prismaService: PrismaService,
     private readonly passwordService: PasswordService,
     private jwtService: JwtService,
+    private userService: UsersService,
   ) {}
 
   async login(loginDto: LoginDto): Promise<{
@@ -141,5 +143,33 @@ export class AuthService {
         throw new InternalServerErrorException(e.message);
       }
     }
+  }
+
+  async refreshTokens(refreshToken: string): Promise<{
+    user: Omit<User, 'senha'>;
+    refreshToken: string;
+    accessToken: string;
+  }> {
+    const decodedTokenData = this.jwtService.verify<{
+      id: string;
+      role: number;
+    }>(refreshToken);
+
+    const user = await this.userService.findOne(decodedTokenData.id);
+    if (!user) {
+      throw new UnauthorizedException('Token expirado ou inválido');
+    }
+
+    return {
+      user,
+      accessToken: this.jwtService.sign(
+        { id: user.iduser, role: user.id_cargo },
+        { expiresIn: '40m' }, //40min
+      ),
+      refreshToken: this.jwtService.sign(
+        { id: user.iduser, role: user.id_cargo },
+        { expiresIn: '7d' },
+      ),
+    };
   }
 }

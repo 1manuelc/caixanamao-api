@@ -6,5 +6,6 @@ import { PasswordService } from 'src/common/password/password.service';
 @Module({
   controllers: [UsersController],
   providers: [UsersService, PasswordService],
+  exports: [UsersService],
 })
 export class UsersModule {}
