@@ -22,9 +22,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(
-    loginDto: LoginDto,
-  ): Promise<{ accessToken: string; user: Omit<User, 'senha'> }> {
+  async login(loginDto: LoginDto): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    user: Omit<User, 'senha'>;
+  }> {
     const { email, senha } = loginDto;
 
     try {
@@ -59,7 +61,11 @@ export class AuthService {
         },
         accessToken: this.jwtService.sign(
           { id: user.iduser, role: user.id_cargo },
-          { expiresIn: 2400 }, //40min
+          { expiresIn: '40m' }, //40min
+        ),
+        refreshToken: this.jwtService.sign(
+          { id: user.iduser, role: user.id_cargo },
+          { expiresIn: '7d' },
         ),
       };
     } catch (e) {
@@ -72,7 +78,10 @@ export class AuthService {
 
   async register(
     registerDto: RegisterDto,
-  ): Promise<{ accessToken: string; user: Omit<User, 'senha'> } | undefined> {
+  ): Promise<
+    | { accessToken: string; refreshToken: string; user: Omit<User, 'senha'> }
+    | undefined
+  > {
     const {
       nome,
       cpf,
@@ -120,7 +129,11 @@ export class AuthService {
         },
         accessToken: this.jwtService.sign(
           { id: user.iduser, role: user.id_cargo },
-          { expiresIn: 2400 }, //40min
+          { expiresIn: '40m' }, //40min
+        ),
+        refreshToken: this.jwtService.sign(
+          { id: user.iduser, role: user.id_cargo },
+          { expiresIn: '7d' },
         ),
       };
     } catch (e) {
