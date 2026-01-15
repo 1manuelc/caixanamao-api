@@ -8,10 +8,14 @@ import { UpdateReportDto } from './dtos/update-report.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { QueryReportDto } from './dtos/query-report.dto';
 import { Report } from './entities/report.entity';
+import { RegistersService } from 'src/registers/registers.service';
 
 @Injectable()
 export class ReportsService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private registersService: RegistersService,
+  ) {}
 
   private async getReportValues(data: Date, data_final: Date) {
     const values = await this.prismaService.tbentradadevalores.aggregate({
@@ -107,7 +111,10 @@ export class ReportsService {
     return reports;
   }
 
-  async findOne(id: number): Promise<Report> {
+  async findOne(id: number, queryReportDto: QueryReportDto): Promise<Report> {
+    const { includeValues, includeRegisters } = queryReportDto;
+    let response: Report;
+
     const report = await this.prismaService.tbrelatorio.findFirst({
       where: { id },
     });
@@ -116,12 +123,34 @@ export class ReportsService {
       throw new NotFoundException('Relatório não encontrado');
     }
 
-    const reportValues = await this.getReportValues(
-      new Date(report.data),
-      new Date(report.data_final),
-    );
+    response = report;
 
-    return { ...report, values: { ...reportValues } };
+    if (includeValues) {
+      const reportValues = await this.getReportValues(
+        new Date(report.data),
+        new Date(report.data_final),
+      );
+
+      response = {
+        ...response,
+        values: reportValues,
+      };
+    }
+
+    if (includeRegisters) {
+      const registers = await this.registersService.findAll({
+        startDate: report.data.toISOString(),
+        endDate: report.data_final.toISOString(),
+        all: 'true',
+      });
+
+      response = {
+        ...response,
+        registers,
+      };
+    }
+
+    return response;
   }
 
   async update(id: number, updateReportDto: UpdateReportDto): Promise<Report> {

@@ -34,8 +34,11 @@ export class ReportsController {
 
   @Get(':id')
   @Roles([RolesEnum.OPERADOR, RolesEnum.ADMIN])
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.reportsService.findOne(id);
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() queryReportDto: QueryReportDto,
+  ) {
+    return this.reportsService.findOne(id, queryReportDto);
   }
 
   @Patch(':id')

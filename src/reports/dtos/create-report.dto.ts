@@ -4,18 +4,15 @@ import {
   IsOptional,
   IsString,
   IsUUID,
-  MaxDate,
   MaxLength,
 } from 'class-validator';
 
 export class CreateReportDto {
   @IsDate()
-  @MaxDate(new Date())
   @Type(() => Date)
   data: Date;
 
   @IsDate()
-  @MaxDate(new Date())
   @Type(() => Date)
   data_final: Date;
 

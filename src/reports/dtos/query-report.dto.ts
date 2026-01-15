@@ -11,4 +11,13 @@ export class QueryReportDto extends PaginationDto {
   @IsBoolean()
   @IsOptional()
   includeValues: string;
+
+  @Transform(({ value }) => {
+    if (value === 'false') return false;
+    if (value === 'true') return true;
+    return Boolean(value);
+  })
+  @IsBoolean()
+  @IsOptional()
+  includeRegisters: string;
 }
