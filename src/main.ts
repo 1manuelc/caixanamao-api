@@ -18,6 +18,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://192.168.0.118:5173',
+      'http://192.168.0.119:5173',
       'http://localhost:5173',
       'https://caixanamao-git-multiset-register-jaqueline-uchoas-projects.vercel.app',
       'https://caixanamao.vercel.app/',
