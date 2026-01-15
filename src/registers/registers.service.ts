@@ -8,9 +8,10 @@ import { CreateRegisterDto } from './dtos/create-register.dto';
 import { UpdateRegisterDto } from './dtos/update-register.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { parseMoney } from './utils/parse-money-to-decimal.util';
 import { Register } from './entities/register.entity';
+import { DateQueryDto } from 'src/common/dtos/date-query.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class RegistersService {
@@ -61,11 +62,33 @@ export class RegistersService {
     }
   }
 
-  async findAll(paginationDto: PaginationDto): Promise<Register[] | []> {
-    const { limit = 10, offset } = paginationDto;
+  async findAll(dateQueryDto: DateQueryDto): Promise<Register[] | []> {
+    const { limit = 10, offset = 0, startDate, endDate, all } = dateQueryDto;
+
+    const where: Prisma.tbentradadevaloresWhereInput = {};
+
+    if (startDate || endDate) {
+      where.data = {};
+      where.data_final = {};
+
+      if (startDate) {
+        const start = new Date(startDate);
+        start.setUTCHours(0, 0, 0, 0);
+        where.data.gte = start;
+      }
+
+      if (endDate && where.data_final) {
+        const end = new Date(endDate);
+        end.setUTCHours(23, 59, 59, 999);
+        where.data_final.lte = end;
+      }
+    }
+
     const registers = await this.prismaService.tbentradadevalores.findMany({
-      take: limit,
+      take: all ? undefined : limit,
       skip: offset,
+      where,
+      orderBy: { data: 'asc' },
     });
 
     return parseMoney(registers) as Register[] | [];
@@ -82,6 +105,7 @@ export class RegistersService {
 
     return parseMoney(register) as Register;
   }
+
   async update(
     id: string,
     updateRegisterDto: UpdateRegisterDto,

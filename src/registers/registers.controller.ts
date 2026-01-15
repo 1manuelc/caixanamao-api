@@ -11,9 +11,9 @@ import {
 import { RegistersService } from './registers.service';
 import { CreateRegisterDto } from './dtos/create-register.dto';
 import { UpdateRegisterDto } from './dtos/update-register.dto';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesEnum } from 'src/common/enums/roles.enum';
+import { DateQueryDto } from 'src/common/dtos/date-query.dto';
 
 @Controller('registers')
 export class RegistersController {
@@ -27,8 +27,8 @@ export class RegistersController {
 
   @Get()
   @Roles([RolesEnum.OPERADOR, RolesEnum.ADMIN])
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.registersService.findAll(paginationDto);
+  findAll(@Query() dateQueryDto: DateQueryDto) {
+    return this.registersService.findAll(dateQueryDto);
   }
 
   @Get(':id')
