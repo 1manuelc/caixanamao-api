@@ -21,7 +21,7 @@ async function bootstrap() {
       'http://192.168.0.119:5173',
       'http://localhost:5173',
       'https://caixanamao-git-multiset-register-jaqueline-uchoas-projects.vercel.app',
-      'https://caixanamao.vercel.app/',
+      'https://caixanamao.vercel.app',
       'https://caixanamao-nyg080hb1-jaqueline-uchoas-projects.vercel.app',
       'https://caixanamao-guencfjhz-jaqueline-uchoas-projects.vercel.app',
     ],
